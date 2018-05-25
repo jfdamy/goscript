@@ -1,27 +1,30 @@
 # GOSCRIPT
 
-Goscript can be use to create small scrit in golang.
+Goscript can be use to create small script in golang.
 It's just for fun, do not use this for anything ;).
 
 
 Like this : 
 ```
-pipeline := goscript.Command("echo", "this is a main test").
-		Pipe(goscript.Func(func(input, output chan (string)) {
-			for i := range input {
-				fmt.Print("myfunc say : ", i)
-				output <- i
-			}
-			close(output)
-		})).
-		Pipe(goscript.Command("sed", "s/main/lame/g")).
-		Pipe(goscript.Command("grep", "test"))
+pipeline := Command("echo", "this is a main test").
+	Pipe(Func(func(input, output chan (string)) {
+		for i := range input {
+			t.Log("myfunc say : ", i, "\n")
+			output <- i
+		}
+		close(output)
+	})).
+	Pipe(Command("sed", "s/main/lame/g")).
+	Pipe(Command("grep", "test"))
 
-	output, _ := pipeline.Run()
+output, _ := pipeline.Run()
 
-	for i := range output {
-		fmt.Print(i)
+for i := range output {
+	t.Log(i)
+	if i != "this is a lame test\n" {
+		t.Error("Expected this is a lame test, got ", i)
 	}
+}
 ```
 
 output : 

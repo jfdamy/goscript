@@ -2,6 +2,7 @@ package goscript
 
 import (
 	"bufio"
+	"fmt"
 	"io"
 	"log"
 	"os/exec"
@@ -58,13 +59,12 @@ func (cmd *cmd) Exec(input, output chan (string)) {
 	}
 	go func() {
 		defer stdout.Close()
+		defer close(output)
 		rd := bufio.NewReader(stdout)
 		for {
 			str, err := rd.ReadString('\n')
 			if err != nil {
-				if output != nil {
-					close(output)
-				}
+				fmt.Println(cmd.command.Path)
 				return
 			}
 			output <- str
@@ -102,7 +102,7 @@ func (f *funcPipeable) Exec(input, output chan (string)) {
 //Pipe create a new pipeline with this Pipeable element
 func (f *funcPipeable) Pipe(pipeable Pipeable) *Pipeline {
 	p := new(Pipeline)
-	p.commands = []Pipeable{f}
+	p.commands = []Pipeable{f, pipeable}
 	return p
 }
 
