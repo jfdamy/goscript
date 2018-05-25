@@ -2,7 +2,6 @@ package goscript
 
 import (
 	"bufio"
-	"fmt"
 	"io"
 	"log"
 	"os/exec"
@@ -64,7 +63,6 @@ func (cmd *cmd) Exec(input, output chan (string)) {
 		for {
 			str, err := rd.ReadString('\n')
 			if err != nil {
-				fmt.Println(cmd.command.Path)
 				return
 			}
 			output <- str
